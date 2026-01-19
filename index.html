@@ -27,16 +27,21 @@
       text-shadow: 0 0 20px rgba(255,215,0,0.5), 0 0 40px rgba(255,215,0,0.3);
     }
     
-    .oracle-input {
+    .category-btn {
       background: rgba(255,255,255,0.1);
       border: 2px solid rgba(255,215,0,0.4);
       transition: all 0.3s ease;
     }
     
-    .oracle-input:focus {
-      border-color: #ffd700;
+    .category-btn:hover {
+      transform: scale(1.05);
       box-shadow: 0 0 20px rgba(255,215,0,0.4);
-      outline: none;
+    }
+    
+    .category-btn.active {
+      background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%);
+      border-color: #ffd700;
+      box-shadow: 0 0 30px rgba(255,215,0,0.6);
     }
     
     .generate-btn {
@@ -92,7 +97,7 @@
       100% { stroke-dashoffset: 0; }
     }
     
-    .drawing-animation path {
+    .drawing-animation path, .drawing-animation line, .drawing-animation circle, .drawing-animation polygon, .drawing-animation polyline, .drawing-animation ellipse {
       stroke-dasharray: 1000;
       animation: drawing 2s ease-out forwards;
     }
@@ -115,29 +120,26 @@
       🔮
      </div>
      <h1 id="title" class="text-4xl md:text-5xl font-bold glow-text mb-2" style="color: #ffd700;">เซียมซีรูปภาพ</h1>
-     <p id="subtitle" class="text-lg md:text-xl opacity-80" style="color: #e8d5b7;">ถามคำถามในใจ แล้วให้ AI ทำนาย</p>
+     <p id="subtitle" class="text-lg md:text-xl opacity-80" style="color: #e8d5b7;">เลือกหมวดหมู่ แล้วให้ AI ทำนาย</p>
     </div><!-- Main Card -->
-    <div class="mystical-card rounded-3xl p-6 md:p-8 w-full max-w-md mx-auto"><!-- Instructions -->
+    <div class="mystical-card rounded-3xl p-6 md:p-8 w-full max-w-2xl mx-auto"><!-- Category Selection -->
+     <div class="mb-8">
+      <div class="flex items-center justify-center gap-2 mb-4"><span class="text-2xl">✨</span> <span class="text-base md:text-lg font-semibold" style="color: #ffd700;">เลือกหมวดที่ต้องการถาม</span> <span class="text-2xl">✨</span>
+      </div>
+      <div id="categories" class="grid grid-cols-2 md:grid-cols-3 gap-3"><!-- Categories will be rendered here -->
+      </div>
+     </div><!-- Selected Category Info -->
+     <div id="category-info" class="mb-6 text-center hidden">
+      <div class="inline-block px-4 py-2 rounded-full" style="background: rgba(255,215,0,0.2); border: 1px solid rgba(255,215,0,0.4);"><span class="text-sm" style="color: #e8d5b7;">คุณเลือก: </span> <span id="selected-category-name" class="font-bold" style="color: #ffd700;"></span>
+      </div>
+     </div><!-- Instructions -->
      <div class="mb-6 text-center">
-      <div class="flex items-center justify-center gap-2 mb-3"><span class="text-2xl">✨</span> <span class="text-sm md:text-base opacity-90" style="color: #e8d5b7;">วิธีเล่น</span> <span class="text-2xl">✨</span>
-      </div>
-      <ol class="text-left text-sm space-y-2 opacity-80" style="color: #e8d5b7;">
-       <li class="flex gap-2"><span style="color: #ffd700;">1.</span> <span>ตั้งคำถามในใจ 1 ข้อ</span></li>
-       <li class="flex gap-2"><span style="color: #ffd700;">2.</span> <span>พิมพ์คำสุ่มด้านล่าง</span></li>
-       <li class="flex gap-2"><span style="color: #ffd700;">3.</span> <span>กดเสี่ยงเซียมซี แล้วตีความ!</span></li>
-      </ol>
-     </div><!-- Input Section -->
-     <div class="mb-6"><label for="keyword-input" class="block text-sm mb-2 opacity-80" style="color: #e8d5b7;"> พิมพ์คำสุ่ม เช่น "ความสุข", "อนาคต", "โชคลาภ" </label> <input type="text" id="keyword-input" class="oracle-input w-full px-4 py-3 rounded-xl text-white placeholder-gray-400 text-lg" placeholder="พิมพ์คำที่นี่..." maxlength="20">
-     </div><!-- Suggested Keywords -->
-     <div class="mb-6">
-      <p class="text-xs mb-2 opacity-60" style="color: #e8d5b7;">หรือเลือกคำแนะนำ:</p>
-      <div id="suggestions" class="flex flex-wrap gap-2"><!-- Suggestions will be rendered here -->
-      </div>
-     </div><!-- Generate Button --> <button id="generate-btn" class="generate-btn w-full py-4 rounded-xl font-bold text-xl text-gray-900"> 🎴 เสี่ยงเซียมซี! </button>
+      <p class="text-sm opacity-80" style="color: #e8d5b7;">💭 ตั้งคำถามในใจเกี่ยวกับหมวดที่เลือก แล้วกดเสี่ยงเซียมซี!</p>
+     </div><!-- Generate Button --> <button id="generate-btn" class="generate-btn w-full py-4 rounded-xl font-bold text-xl text-gray-900" disabled> 🎴 เลือกหมวดก่อนเสี่ยงเซียมซี </button>
     </div><!-- Result Section -->
     <div id="result-section" class="mt-8 w-full max-w-md mx-auto hidden">
      <div class="result-frame rounded-3xl p-6 text-center">
-      <div class="mb-4"><span class="text-sm opacity-60" style="color: #e8d5b7;">🌟 ผลเซียมซีของคุณ 🌟</span>
+      <div class="mb-4"><span id="result-category" class="text-sm opacity-60" style="color: #e8d5b7;"></span>
       </div><!-- Oracle Drawing -->
       <div id="oracle-drawing" class="w-48 h-48 mx-auto mb-4 rounded-2xl flex items-center justify-center overflow-hidden" style="background: rgba(255,215,0,0.1);"><!-- SVG will be inserted here -->
       </div><!-- Interpretation -->
@@ -148,10 +150,7 @@
      </div>
     </div><!-- Footer Tip -->
     <div class="mt-8 text-center text-xs opacity-50" style="color: #e8d5b7;">
-     💡 เคล็ดลับ: ตีความเข้าข้างตัวเองได้เลย ไม่มีผิด!
-    </div>
-    <div class="mt-8 text-center text-xs opacity-50" style="color: #e8d5b7;">
-      จัดทำโดย: นายรัชพล สูขโต ระดับชั้น สทส.1/2 แผนก เทคโนโลยีสารสนเทศ วิทยาลัย อาชีวศึกษาร้อยเอ็ด
+     💡 จัดทำโดย นายรัชพล สุขโต ระดับชั้น สทส.1/2 แผนกเทคโนโลยีสารสนเทศ วิทยาลัยอาชีวศึกษา
     </div>
    </div>
   </div>
@@ -159,8 +158,7 @@
     // Default configuration
     const defaultConfig = {
       title_text: 'เซียมซีรูปภาพ',
-      subtitle_text: 'ถามคำถามในใจ แล้วให้ AI ทำนาย',
-      button_text: '🎴 เสี่ยงเซียมซี!',
+      subtitle_text: 'เลือกหมวดหมู่ แล้วให้ AI ทำนาย',
       primary_color: '#ffd700',
       secondary_color: '#1a0a2e',
       text_color: '#e8d5b7',
@@ -169,140 +167,362 @@
 
     let config = { ...defaultConfig };
 
-    // Oracle data - symbols and meanings
-    const oracleSymbols = [
-      {
-        name: 'วงกลมทองคำ',
-        meaning: 'โชคลาภกำลังมา! สิ่งดีๆ กำลังหมุนเข้าหาคุณ',
-        svg: `<svg viewBox="0 0 100 100" class="w-full h-full drawing-animation">
-          <circle cx="50" cy="50" r="35" fill="none" stroke="#ffd700" stroke-width="4"/>
-          <circle cx="50" cy="50" r="25" fill="none" stroke="#ff8c00" stroke-width="2"/>
-          <circle cx="50" cy="50" r="15" fill="#ffd700" opacity="0.5"/>
-        </svg>`
+    // Oracle data organized by categories
+    const oracleCategories = {
+      'ความสุข': {
+        emoji: '💫',
+        color: '#ffd700',
+        oracles: [
+          {
+            name: 'ดวงอาทิตย์สดใส',
+            meaning: 'ความสุขเต็มเปี่ยม! วันนี้จะเป็นวันที่สดใสมาก',
+            svg: `<svg viewBox="0 0 100 100" class="w-full h-full drawing-animation">
+              <circle cx="50" cy="50" r="20" fill="#ffd700" opacity="0.6"/>
+              <circle cx="50" cy="50" r="20" fill="none" stroke="#ff8c00" stroke-width="3"/>
+              ${[0,45,90,135,180,225,270,315].map(angle => {
+                const rad = angle * Math.PI / 180;
+                const x1 = 50 + 28 * Math.cos(rad);
+                const y1 = 50 + 28 * Math.sin(rad);
+                const x2 = 50 + 40 * Math.cos(rad);
+                const y2 = 50 + 40 * Math.sin(rad);
+                return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#ffd700" stroke-width="3"/>`;
+              }).join('')}
+            </svg>`
+          },
+          {
+            name: 'รอยยิ้มพราว',
+            meaning: 'ยิ้มไว้! ความสุขเล็กๆ จะทำให้วันนี้สดใส',
+            svg: `<svg viewBox="0 0 100 100" class="w-full h-full drawing-animation">
+              <circle cx="50" cy="50" r="35" fill="none" stroke="#ffd700" stroke-width="4"/>
+              <circle cx="35" cy="40" r="4" fill="#ffd700"/>
+              <circle cx="65" cy="40" r="4" fill="#ffd700"/>
+              <path d="M30 55 Q50 75 70 55" fill="none" stroke="#ffd700" stroke-width="4" stroke-linecap="round"/>
+            </svg>`
+          },
+          {
+            name: 'ดอกไม้บาน',
+            meaning: 'ความสุขกำลังผลิบาน! เปิดใจรับสิ่งดีๆ',
+            svg: `<svg viewBox="0 0 100 100" class="w-full h-full drawing-animation">
+              <circle cx="50" cy="30" r="12" fill="none" stroke="#ff69b4" stroke-width="3"/>
+              <circle cx="70" cy="45" r="12" fill="none" stroke="#ff69b4" stroke-width="3"/>
+              <circle cx="65" cy="65" r="12" fill="none" stroke="#ff69b4" stroke-width="3"/>
+              <circle cx="35" cy="65" r="12" fill="none" stroke="#ff69b4" stroke-width="3"/>
+              <circle cx="30" cy="45" r="12" fill="none" stroke="#ff69b4" stroke-width="3"/>
+              <circle cx="50" cy="50" r="8" fill="#ffd700"/>
+            </svg>`
+          },
+          {
+            name: 'ก้อนเมฆนุ่ม',
+            meaning: 'ผ่อนคลายไว้! ความสุขมาจากความสงบใจ',
+            svg: `<svg viewBox="0 0 100 100" class="w-full h-full drawing-animation">
+              <ellipse cx="50" cy="55" rx="35" ry="20" fill="none" stroke="#e0e0e0" stroke-width="3"/>
+              <circle cx="30" cy="50" r="15" fill="none" stroke="#e0e0e0" stroke-width="3"/>
+              <circle cx="70" cy="50" r="12" fill="none" stroke="#e0e0e0" stroke-width="3"/>
+              <circle cx="45" cy="40" r="10" fill="none" stroke="#ffd700" stroke-width="2"/>
+            </svg>`
+          },
+          {
+            name: 'ฟองสบู่ลอย',
+            meaning: 'เบาสบาย! ความสุขอยู่ในสิ่งเล็กๆ รอบตัว',
+            svg: `<svg viewBox="0 0 100 100" class="w-full h-full drawing-animation">
+              <circle cx="50" cy="50" r="25" fill="none" stroke="#81d4fa" stroke-width="3"/>
+              <circle cx="40" cy="40" r="5" fill="#fff" opacity="0.7"/>
+              <circle cx="65" cy="25" r="8" fill="none" stroke="#81d4fa" stroke-width="2"/>
+              <circle cx="30" cy="70" r="6" fill="none" stroke="#81d4fa" stroke-width="2"/>
+            </svg>`
+          }
+        ]
       },
-      {
-        name: 'ดาวส่องแสง',
-        meaning: 'ความสำเร็จรออยู่! เป้าหมายของคุณใกล้แค่เอื้อม',
-        svg: `<svg viewBox="0 0 100 100" class="w-full h-full drawing-animation">
-          <polygon points="50,10 61,40 95,40 68,60 79,90 50,72 21,90 32,60 5,40 39,40" fill="none" stroke="#ffd700" stroke-width="3"/>
-          <circle cx="50" cy="50" r="8" fill="#ff8c00"/>
-        </svg>`
+      'ความรัก': {
+        emoji: '💕',
+        color: '#ff6b6b',
+        oracles: [
+          {
+            name: 'หัวใจคู่',
+            meaning: 'ความรักกำลังเบ่งบาน! เปิดใจรับคนพิเศษ',
+            svg: `<svg viewBox="0 0 100 100" class="w-full h-full drawing-animation">
+              <path d="M50 85 C20 55, 10 35, 30 25 C40 20, 50 30, 50 35 C50 30, 60 20, 70 25 C90 35, 80 55, 50 85" fill="none" stroke="#ff6b6b" stroke-width="4"/>
+              <circle cx="35" cy="40" r="3" fill="#ffd700"/>
+              <circle cx="65" cy="40" r="3" fill="#ffd700"/>
+            </svg>`
+          },
+          {
+            name: 'ดอกกุหลาบ',
+            meaning: 'รักแท้กำลังมา! จงรอคอยด้วยใจอดทน',
+            svg: `<svg viewBox="0 0 100 100" class="w-full h-full drawing-animation">
+              <circle cx="50" cy="40" r="15" fill="none" stroke="#ff6b6b" stroke-width="3"/>
+              <circle cx="50" cy="40" r="8" fill="none" stroke="#ff6b6b" stroke-width="2"/>
+              <line x1="50" y1="55" x2="50" y2="80" stroke="#4caf50" stroke-width="3"/>
+              <path d="M40 65 Q35 60 40 55" fill="none" stroke="#4caf50" stroke-width="2"/>
+            </svg>`
+          },
+          {
+            name: 'ดวงดาวคู่',
+            meaning: 'สองหัวใจจะพบกัน! ความรักมีเสน่ห์',
+            svg: `<svg viewBox="0 0 100 100" class="w-full h-full drawing-animation">
+              <polygon points="35,20 40,35 55,35 43,43 47,58 35,48 23,58 27,43 15,35 30,35" fill="none" stroke="#ffd700" stroke-width="2"/>
+              <polygon points="65,40 70,55 85,55 73,63 77,78 65,68 53,78 57,63 45,55 60,55" fill="none" stroke="#ff6b6b" stroke-width="2"/>
+            </svg>`
+          },
+          {
+            name: 'ลูกศรคิวปิด',
+            meaning: 'โดนลูกศรรักแล้ว! หัวใจเต้นแรง',
+            svg: `<svg viewBox="0 0 100 100" class="w-full h-full drawing-animation">
+              <line x1="20" y1="50" x2="80" y2="50" stroke="#ff6b6b" stroke-width="3"/>
+              <polygon points="80,50 70,45 70,55" fill="#ff6b6b"/>
+              <path d="M15 50 L25 40 L25 60 Z" fill="#ffd700"/>
+              <circle cx="50" cy="50" r="8" fill="none" stroke="#ff6b6b" stroke-width="2"/>
+            </svg>`
+          },
+          {
+            name: 'แหวนแห่งรัก',
+            meaning: 'ความผูกพันแน่นแฟ้น! ความรักมั่นคง',
+            svg: `<svg viewBox="0 0 100 100" class="w-full h-full drawing-animation">
+              <circle cx="50" cy="55" r="25" fill="none" stroke="#ffd700" stroke-width="4"/>
+              <circle cx="50" cy="55" r="15" fill="none" stroke="#ffd700" stroke-width="2"/>
+              <polygon points="50,25 55,35 65,35 57,42 60,52 50,45 40,52 43,42 35,35 45,35" fill="#ff6b6b"/>
+            </svg>`
+          }
+        ]
       },
-      {
-        name: 'หัวใจเปล่งประกาย',
-        meaning: 'ความรักกำลังเบ่งบาน! เปิดใจรับสิ่งใหม่ๆ',
-        svg: `<svg viewBox="0 0 100 100" class="w-full h-full drawing-animation">
-          <path d="M50 85 C20 55, 10 35, 30 25 C40 20, 50 30, 50 35 C50 30, 60 20, 70 25 C90 35, 80 55, 50 85" fill="none" stroke="#ff6b6b" stroke-width="4"/>
-          <circle cx="35" cy="40" r="3" fill="#ffd700"/>
-          <circle cx="65" cy="40" r="3" fill="#ffd700"/>
-        </svg>`
+      'การเงิน': {
+        emoji: '💰',
+        color: '#4caf50',
+        oracles: [
+          {
+            name: 'วงกลมทอง',
+            meaning: 'โชคลาภกำลังมา! เงินทองไหลเข้า',
+            svg: `<svg viewBox="0 0 100 100" class="w-full h-full drawing-animation">
+              <circle cx="50" cy="50" r="35" fill="none" stroke="#ffd700" stroke-width="4"/>
+              <circle cx="50" cy="50" r="25" fill="none" stroke="#ff8c00" stroke-width="2"/>
+              <circle cx="50" cy="50" r="15" fill="#ffd700" opacity="0.5"/>
+            </svg>`
+          },
+          {
+            name: 'ใบโคลเวอร์',
+            meaning: 'โชคดีเรื่องเงิน! ลงทุนอะไรก็รุ่ง',
+            svg: `<svg viewBox="0 0 100 100" class="w-full h-full drawing-animation">
+              <circle cx="50" cy="35" r="15" fill="none" stroke="#4caf50" stroke-width="3"/>
+              <circle cx="35" cy="50" r="15" fill="none" stroke="#4caf50" stroke-width="3"/>
+              <circle cx="65" cy="50" r="15" fill="none" stroke="#4caf50" stroke-width="3"/>
+              <circle cx="50" cy="65" r="15" fill="none" stroke="#4caf50" stroke-width="3"/>
+              <line x1="50" y1="75" x2="50" y2="95" stroke="#ffd700" stroke-width="3"/>
+            </svg>`
+          },
+          {
+            name: 'กองเหรียญ',
+            meaning: 'การเงินมั่นคง! รายได้เพิ่มขึ้น',
+            svg: `<svg viewBox="0 0 100 100" class="w-full h-full drawing-animation">
+              <ellipse cx="50" cy="70" rx="30" ry="10" fill="none" stroke="#ffd700" stroke-width="3"/>
+              <ellipse cx="50" cy="60" rx="30" ry="10" fill="none" stroke="#ffd700" stroke-width="3"/>
+              <ellipse cx="50" cy="50" rx="30" ry="10" fill="none" stroke="#ffd700" stroke-width="3"/>
+              <line x1="35" y1="50" x2="35" y2="70" stroke="#ffd700" stroke-width="2"/>
+              <line x1="65" y1="50" x2="65" y2="70" stroke="#ffd700" stroke-width="2"/>
+            </svg>`
+          },
+          {
+            name: 'กราฟขาขึ้น',
+            meaning: 'ความมั่งคั่งเพิ่ม! ทรัพย์สินสูงขึ้น',
+            svg: `<svg viewBox="0 0 100 100" class="w-full h-full drawing-animation">
+              <polyline points="10,80 30,60 50,65 70,40 90,20" fill="none" stroke="#4caf50" stroke-width="4"/>
+              <circle cx="10" cy="80" r="4" fill="#4caf50"/>
+              <circle cx="30" cy="60" r="4" fill="#4caf50"/>
+              <circle cx="50" cy="65" r="4" fill="#4caf50"/>
+              <circle cx="70" cy="40" r="4" fill="#4caf50"/>
+              <circle cx="90" cy="20" r="4" fill="#ffd700"/>
+            </svg>`
+          },
+          {
+            name: 'ถุงทอง',
+            meaning: 'ลาภลอยมา! รับเงินก้อนโต',
+            svg: `<svg viewBox="0 0 100 100" class="w-full h-full drawing-animation">
+              <path d="M35 40 Q35 25 50 25 Q65 25 65 40" fill="none" stroke="#8b4513" stroke-width="3"/>
+              <ellipse cx="50" cy="40" rx="20" ry="8" fill="none" stroke="#8b4513" stroke-width="3"/>
+              <path d="M30 40 L35 75 Q35 82 50 82 Q65 82 65 75 L70 40" fill="none" stroke="#ffd700" stroke-width="4"/>
+              <text x="50" y="62" text-anchor="middle" fill="#ffd700" font-size="20" font-weight="bold">$</text>
+            </svg>`
+          }
+        ]
       },
-      {
-        name: 'คลื่นน้ำ',
-        meaning: 'การเปลี่ยนแปลงกำลังมา! ปรับตัวแล้วจะรุ่ง',
-        svg: `<svg viewBox="0 0 100 100" class="w-full h-full drawing-animation">
-          <path d="M10 50 Q25 30, 40 50 T70 50 T100 50" fill="none" stroke="#4fc3f7" stroke-width="4"/>
-          <path d="M10 65 Q25 45, 40 65 T70 65 T100 65" fill="none" stroke="#ffd700" stroke-width="3"/>
-          <path d="M10 35 Q25 55, 40 35 T70 35 T100 35" fill="none" stroke="#81d4fa" stroke-width="2"/>
-        </svg>`
+      'การงาน': {
+        emoji: '🎯',
+        color: '#2196f3',
+        oracles: [
+          {
+            name: 'ดาวแห่งชัยชนะ',
+            meaning: 'ความสำเร็จรออยู่! งานจะราบรื่น',
+            svg: `<svg viewBox="0 0 100 100" class="w-full h-full drawing-animation">
+              <polygon points="50,10 61,40 95,40 68,60 79,90 50,72 21,90 32,60 5,40 39,40" fill="none" stroke="#ffd700" stroke-width="3"/>
+              <circle cx="50" cy="50" r="8" fill="#ff8c00"/>
+            </svg>`
+          },
+          {
+            name: 'ภูเขาพิชิต',
+            meaning: 'อุปสรรคเป็นบันได! จะถึงจุดสูงสุด',
+            svg: `<svg viewBox="0 0 100 100" class="w-full h-full drawing-animation">
+              <polygon points="50,15 85,80 15,80" fill="none" stroke="#a5d6a7" stroke-width="4"/>
+              <polygon points="50,35 70,80 30,80" fill="none" stroke="#ffd700" stroke-width="2"/>
+              <line x1="50" y1="15" x2="50" y2="5" stroke="#ffd700" stroke-width="2"/>
+            </svg>`
+          },
+          {
+            name: 'ล้อเฟือง',
+            meaning: 'ทำงานหนัก! ความพยายามจะตอบแทน',
+            svg: `<svg viewBox="0 0 100 100" class="w-full h-full drawing-animation">
+              <circle cx="50" cy="50" r="25" fill="none" stroke="#2196f3" stroke-width="3"/>
+              ${[0,60,120,180,240,300].map(angle => {
+                const rad = angle * Math.PI / 180;
+                const x = 50 + 30 * Math.cos(rad);
+                const y = 50 + 30 * Math.sin(rad);
+                return `<circle cx="${x}" cy="${y}" r="5" fill="#ffd700"/>`;
+              }).join('')}
+              <circle cx="50" cy="50" r="10" fill="none" stroke="#2196f3" stroke-width="3"/>
+            </svg>`
+          },
+          {
+            name: 'บันไดสู่ฝัน',
+            meaning: 'ก้าวไปทีละขั้น! ความสำเร็จใกล้แล้ว',
+            svg: `<svg viewBox="0 0 100 100" class="w-full h-full drawing-animation">
+              <line x1="20" y1="80" x2="40" y2="80" stroke="#2196f3" stroke-width="3"/>
+              <line x1="40" y1="80" x2="40" y2="65" stroke="#2196f3" stroke-width="3"/>
+              <line x1="40" y1="65" x2="55" y2="65" stroke="#2196f3" stroke-width="3"/>
+              <line x1="55" y1="65" x2="55" y2="50" stroke="#2196f3" stroke-width="3"/>
+              <line x1="55" y1="50" x2="70" y2="50" stroke="#2196f3" stroke-width="3"/>
+              <line x1="70" y1="50" x2="70" y2="35" stroke="#2196f3" stroke-width="3"/>
+              <line x1="70" y1="35" x2="85" y2="35" stroke="#2196f3" stroke-width="3"/>
+              <polygon points="85,25 90,35 80,35" fill="#ffd700"/>
+            </svg>`
+          },
+          {
+            name: 'โล่ความภาคภูมิ',
+            meaning: 'ผลงานโดดเด่น! จะได้รับการยอมรับ',
+            svg: `<svg viewBox="0 0 100 100" class="w-full h-full drawing-animation">
+              <path d="M50 20 Q70 25 75 45 Q75 65 50 85 Q25 65 25 45 Q30 25 50 20" fill="none" stroke="#ffd700" stroke-width="4"/>
+              <polygon points="50,40 55,50 65,50 57,57 60,67 50,60 40,67 43,57 35,50 45,50" fill="#ff8c00"/>
+            </svg>`
+          }
+        ]
       },
-      {
-        name: 'ภูเขาสูง',
-        meaning: 'อุปสรรคมีไว้ให้ข้าม! พยายามต่อไปจะสำเร็จ',
-        svg: `<svg viewBox="0 0 100 100" class="w-full h-full drawing-animation">
-          <polygon points="50,15 85,80 15,80" fill="none" stroke="#a5d6a7" stroke-width="4"/>
-          <polygon points="50,35 70,80 30,80" fill="none" stroke="#ffd700" stroke-width="2"/>
-          <line x1="50" y1="15" x2="50" y2="5" stroke="#ffd700" stroke-width="2"/>
-        </svg>`
+      'สุขภาพ': {
+        emoji: '🌟',
+        color: '#8bc34a',
+        oracles: [
+          {
+            name: 'หัวใจแข็งแรง',
+            meaning: 'สุขภาพดี! ร่างกายเต็มพลัง',
+            svg: `<svg viewBox="0 0 100 100" class="w-full h-full drawing-animation">
+              <path d="M50 75 C30 55, 20 40, 35 30 C42 25, 50 32, 50 37 C50 32, 58 25, 65 30 C80 40, 70 55, 50 75" fill="none" stroke="#e91e63" stroke-width="4"/>
+              <polyline points="35,45 42,52 48,42 54,55 60,48" fill="none" stroke="#4caf50" stroke-width="3"/>
+            </svg>`
+          },
+          {
+            name: 'ต้นไม้เขียว',
+            meaning: 'เติบโตแข็งแรง! มีพลังชีวิต',
+            svg: `<svg viewBox="0 0 100 100" class="w-full h-full drawing-animation">
+              <line x1="50" y1="50" x2="50" y2="85" stroke="#8b4513" stroke-width="4"/>
+              <circle cx="50" cy="35" r="20" fill="none" stroke="#4caf50" stroke-width="3"/>
+              <circle cx="35" cy="45" r="15" fill="none" stroke="#4caf50" stroke-width="3"/>
+              <circle cx="65" cy="45" r="15" fill="none" stroke="#4caf50" stroke-width="3"/>
+            </svg>`
+          },
+          {
+            name: 'แสงจันทร์',
+            meaning: 'นอนหลับสนิท! พักผ่อนดีจิตใจสบาย',
+            svg: `<svg viewBox="0 0 100 100" class="w-full h-full drawing-animation">
+              <path d="M60 20 A30 30 0 1 1 60 80 A20 20 0 1 0 60 20" fill="none" stroke="#ffd700" stroke-width="4"/>
+              <circle cx="35" cy="35" r="2" fill="#fff"/>
+              <circle cx="25" cy="55" r="1.5" fill="#fff"/>
+              <circle cx="40" cy="70" r="1" fill="#fff"/>
+            </svg>`
+          },
+          {
+            name: 'หยดน้ำใส',
+            meaning: 'ดื่มน้ำเยอะๆ! ร่างกายจะสดชื่น',
+            svg: `<svg viewBox="0 0 100 100" class="w-full h-full drawing-animation">
+              <path d="M50 20 L65 50 Q65 70 50 80 Q35 70 35 50 Z" fill="none" stroke="#2196f3" stroke-width="4"/>
+              <circle cx="50" cy="55" r="10" fill="#81d4fa" opacity="0.5"/>
+            </svg>`
+          },
+          {
+            name: 'ดัมเบิล',
+            meaning: 'ออกกำลังกาย! ร่างกายจะแข็งแรง',
+            svg: `<svg viewBox="0 0 100 100" class="w-full h-full drawing-animation">
+              <circle cx="30" cy="40" r="8" fill="none" stroke="#ff9800" stroke-width="3"/>
+              <circle cx="70" cy="40" r="8" fill="none" stroke="#ff9800" stroke-width="3"/>
+              <line x1="38" y1="40" x2="50" y2="40" stroke="#ff9800" stroke-width="3"/>
+              <line x1="62" y1="40" x2="50" y2="40" stroke="#ff9800" stroke-width="3"/>
+              <line x1="50" y1="40" x2="50" y2="55" stroke="#ff9800" stroke-width="3"/>
+              <circle cx="50" cy="55" r="6" fill="#ffd700"/>
+            </svg>`
+          }
+        ]
       },
-      {
-        name: 'ดวงอาทิตย์',
-        meaning: 'พลังงานเต็มเปี่ยม! วันนี้จะเป็นวันที่ดี',
-        svg: `<svg viewBox="0 0 100 100" class="w-full h-full drawing-animation">
-          <circle cx="50" cy="50" r="20" fill="#ffd700" opacity="0.6"/>
-          <circle cx="50" cy="50" r="20" fill="none" stroke="#ff8c00" stroke-width="3"/>
-          ${[0,45,90,135,180,225,270,315].map(angle => {
-            const rad = angle * Math.PI / 180;
-            const x1 = 50 + 28 * Math.cos(rad);
-            const y1 = 50 + 28 * Math.sin(rad);
-            const x2 = 50 + 40 * Math.cos(rad);
-            const y2 = 50 + 40 * Math.sin(rad);
-            return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#ffd700" stroke-width="3"/>`;
-          }).join('')}
-        </svg>`
-      },
-      {
-        name: 'พระจันทร์เสี้ยว',
-        meaning: 'ความลึกลับรอเผย! คำตอบจะมาในเร็วๆ นี้',
-        svg: `<svg viewBox="0 0 100 100" class="w-full h-full drawing-animation">
-          <path d="M60 20 A30 30 0 1 1 60 80 A20 20 0 1 0 60 20" fill="none" stroke="#ffd700" stroke-width="4"/>
-          <circle cx="35" cy="35" r="2" fill="#fff"/>
-          <circle cx="25" cy="55" r="1.5" fill="#fff"/>
-          <circle cx="40" cy="70" r="1" fill="#fff"/>
-        </svg>`
-      },
-      {
-        name: 'สายฟ้า',
-        meaning: 'โอกาสมาเร็ว! คว้าไว้อย่าปล่อย',
-        svg: `<svg viewBox="0 0 100 100" class="w-full h-full drawing-animation">
-          <polygon points="55,10 35,45 50,45 45,90 65,50 50,50" fill="none" stroke="#ffd700" stroke-width="4"/>
-          <polygon points="55,25 45,45 52,45 48,70 58,50 52,50" fill="#ff8c00" opacity="0.5"/>
-        </svg>`
-      },
-      {
-        name: 'ใบโคลเวอร์',
-        meaning: 'โชคดีสุดๆ! ทำอะไรก็จะราบรื่น',
-        svg: `<svg viewBox="0 0 100 100" class="w-full h-full drawing-animation">
-          <circle cx="50" cy="35" r="15" fill="none" stroke="#4caf50" stroke-width="3"/>
-          <circle cx="35" cy="50" r="15" fill="none" stroke="#4caf50" stroke-width="3"/>
-          <circle cx="65" cy="50" r="15" fill="none" stroke="#4caf50" stroke-width="3"/>
-          <circle cx="50" cy="65" r="15" fill="none" stroke="#4caf50" stroke-width="3"/>
-          <line x1="50" y1="75" x2="50" y2="95" stroke="#ffd700" stroke-width="3"/>
-        </svg>`
-      },
-      {
-        name: 'ก้อนเมฆ',
-        meaning: 'พักผ่อนบ้าง! อย่าเครียดมาก ทุกอย่างจะดีเอง',
-        svg: `<svg viewBox="0 0 100 100" class="w-full h-full drawing-animation">
-          <ellipse cx="50" cy="55" rx="35" ry="20" fill="none" stroke="#e0e0e0" stroke-width="3"/>
-          <circle cx="30" cy="50" r="15" fill="none" stroke="#e0e0e0" stroke-width="3"/>
-          <circle cx="70" cy="50" r="12" fill="none" stroke="#e0e0e0" stroke-width="3"/>
-          <circle cx="45" cy="40" r="10" fill="none" stroke="#ffd700" stroke-width="2"/>
-        </svg>`
-      },
-      {
-        name: 'เกลียวคลื่น',
-        meaning: 'พลังงานหมุนเวียน! สิ่งดีๆ กำลังกลับมา',
-        svg: `<svg viewBox="0 0 100 100" class="w-full h-full drawing-animation">
-          <path d="M50 50 m-5 0 a5 5 0 1 1 10 0 a10 10 0 1 1 -20 0 a15 15 0 1 1 30 0 a20 20 0 1 1 -40 0 a25 25 0 1 1 50 0" fill="none" stroke="#ffd700" stroke-width="3"/>
-        </svg>`
-      },
-      {
-        name: 'เพชรประกาย',
-        meaning: 'คุณค่าที่ซ่อนอยู่! มองให้ดีจะเจอสิ่งมีค่า',
-        svg: `<svg viewBox="0 0 100 100" class="w-full h-full drawing-animation">
-          <polygon points="50,15 75,40 50,85 25,40" fill="none" stroke="#e0f7fa" stroke-width="3"/>
-          <line x1="25" y1="40" x2="75" y2="40" stroke="#ffd700" stroke-width="2"/>
-          <line x1="50" y1="15" x2="50" y2="40" stroke="#ffd700" stroke-width="2"/>
-          <line x1="50" y1="40" x2="50" y2="85" stroke="#ffd700" stroke-width="2"/>
-        </svg>`
+      'การเดินทาง': {
+        emoji: '🎁',
+        color: '#9c27b0',
+        oracles: [
+          {
+            name: 'เข็มทิศนำทาง',
+            meaning: 'ทางใหม่รอคอย! การเดินทางจะราบรื่น',
+            svg: `<svg viewBox="0 0 100 100" class="w-full h-full drawing-animation">
+              <circle cx="50" cy="50" r="35" fill="none" stroke="#9c27b0" stroke-width="3"/>
+              <polygon points="50,20 55,45 50,50 45,45" fill="#e91e63"/>
+              <text x="50" y="80" text-anchor="middle" fill="#9c27b0" font-size="12" font-weight="bold">N</text>
+            </svg>`
+          },
+          {
+            name: 'เส้นทางสาย',
+            meaning: 'ผจญภัยใหม่! ประสบการณ์ดีรออยู่',
+            svg: `<svg viewBox="0 0 100 100" class="w-full h-full drawing-animation">
+              <path d="M10 80 Q30 60 50 70 T90 50" fill="none" stroke="#9c27b0" stroke-width="4" stroke-dasharray="5,5"/>
+              <circle cx="10" cy="80" r="5" fill="#4caf50"/>
+              <circle cx="90" cy="50" r="5" fill="#e91e63"/>
+              <polygon points="90,45 95,50 90,55" fill="#e91e63"/>
+            </svg>`
+          },
+          {
+            name: 'กระเป๋าเดินทาง',
+            meaning: 'เตรียมตัวได้! ทริปดีๆ กำลังมา',
+            svg: `<svg viewBox="0 0 100 100" class="w-full h-full drawing-animation">
+              <rect x="25" y="45" width="50" height="35" rx="5" fill="none" stroke="#9c27b0" stroke-width="3"/>
+              <rect x="40" y="35" width="20" height="15" fill="none" stroke="#9c27b0" stroke-width="3"/>
+              <circle cx="50" cy="62" r="8" fill="none" stroke="#ffd700" stroke-width="2"/>
+            </svg>`
+          },
+          {
+            name: 'เครื่องบิน',
+            meaning: 'บินสูง! โอกาสใหม่ไกลๆ รออยู่',
+            svg: `<svg viewBox="0 0 100 100" class="w-full h-full drawing-animation">
+              <path d="M20 50 L50 40 L50 25 L55 25 L55 40 L80 35 L85 40 L60 48 L60 65 L68 70 L68 75 L60 72 L50 75 L40 72 L32 75 L32 70 L40 65 L40 48 L15 55 Z" fill="none" stroke="#2196f3" stroke-width="2"/>
+            </svg>`
+          },
+          {
+            name: 'แผนที่สมบัติ',
+            meaning: 'ค้นพบใหม่! จุดหมายที่ดีรอคุณอยู่',
+            svg: `<svg viewBox="0 0 100 100" class="w-full h-full drawing-animation">
+              <rect x="20" y="25" width="60" height="50" fill="none" stroke="#ff9800" stroke-width="3"/>
+              <polyline points="30,35 45,50 35,65" fill="none" stroke="#9c27b0" stroke-width="2"/>
+              <polyline points="55,40 65,55 70,45" fill="none" stroke="#9c27b0" stroke-width="2"/>
+              <polygon points="50,55 52,60 57,60 53,64 55,69 50,66 45,69 47,64 43,60 48,60" fill="#e91e63"/>
+            </svg>`
+          }
+        ]
       }
-    ];
+    };
 
-    const suggestedKeywords = [
-      '💫 ความสุข', '🌟 อนาคต', '💰 โชคลาภ', 
-      '💕 ความรัก', '🎯 เป้าหมาย', '🎁 เซอร์ไพรส์'
-    ];
+    let selectedCategory = null;
 
     // DOM Elements
-    const keywordInput = document.getElementById('keyword-input');
     const generateBtn = document.getElementById('generate-btn');
     const resultSection = document.getElementById('result-section');
     const oracleDrawing = document.getElementById('oracle-drawing');
     const oracleName = document.getElementById('oracle-name');
     const oracleMeaning = document.getElementById('oracle-meaning');
+    const resultCategory = document.getElementById('result-category');
     const tryAgainBtn = document.getElementById('try-again-btn');
-    const suggestionsContainer = document.getElementById('suggestions');
+    const categoriesContainer = document.getElementById('categories');
+    const categoryInfo = document.getElementById('category-info');
+    const selectedCategoryName = document.getElementById('selected-category-name');
     const starsContainer = document.getElementById('stars-container');
 
     // Create floating stars
@@ -321,37 +541,47 @@
       }
     }
 
-    // Render suggestions
-    function renderSuggestions() {
-      suggestionsContainer.innerHTML = '';
-      suggestedKeywords.forEach(keyword => {
+    // Render categories
+    function renderCategories() {
+      categoriesContainer.innerHTML = '';
+      Object.keys(oracleCategories).forEach(categoryName => {
+        const category = oracleCategories[categoryName];
         const btn = document.createElement('button');
-        btn.className = 'px-3 py-1 rounded-full text-xs transition-all hover:scale-105';
-        btn.style.background = 'rgba(255,215,0,0.2)';
-        btn.style.color = '#ffd700';
-        btn.style.border = '1px solid rgba(255,215,0,0.3)';
-        btn.textContent = keyword;
+        btn.className = 'category-btn px-4 py-3 rounded-xl font-medium text-sm flex flex-col items-center gap-2 transition-all';
+        btn.innerHTML = `
+          <span class="text-3xl">${category.emoji}</span>
+          <span class="text-white">${categoryName}</span>
+        `;
+        
         btn.addEventListener('click', () => {
-          keywordInput.value = keyword.replace(/^[^\s]+\s/, '');
-          keywordInput.focus();
+          selectedCategory = categoryName;
+          
+          // Update active state
+          document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          
+          // Show selected category info
+          categoryInfo.classList.remove('hidden');
+          selectedCategoryName.textContent = `${category.emoji} ${categoryName}`;
+          
+          // Enable generate button
+          generateBtn.disabled = false;
+          generateBtn.textContent = '🎴 เสี่ยงเซียมซี!';
+          
+          // Hide previous result
+          resultSection.classList.add('hidden');
         });
-        suggestionsContainer.appendChild(btn);
+        
+        categoriesContainer.appendChild(btn);
       });
     }
 
     // Generate oracle result
     function generateOracle() {
-      const keyword = keywordInput.value.trim();
-      if (!keyword) {
-        keywordInput.style.borderColor = '#ff6b6b';
-        keywordInput.style.boxShadow = '0 0 20px rgba(255,107,107,0.4)';
-        setTimeout(() => {
-          keywordInput.style.borderColor = 'rgba(255,215,0,0.4)';
-          keywordInput.style.boxShadow = 'none';
-        }, 1000);
-        return;
-      }
-
+      if (!selectedCategory) return;
+      
+      const category = oracleCategories[selectedCategory];
+      
       // Disable button during animation
       generateBtn.disabled = true;
       generateBtn.textContent = '🔮 กำลังทำนาย...';
@@ -361,6 +591,7 @@
         <div class="text-4xl pulse-glow">🔮</div>
       `;
       resultSection.classList.remove('hidden');
+      resultCategory.textContent = `🌟 ผลเซียมซี ${category.emoji} ${selectedCategory} 🌟`;
       oracleName.textContent = 'กำลังถอดรหัส...';
       oracleMeaning.textContent = '';
 
@@ -371,33 +602,25 @@
 
       // Reveal after delay
       setTimeout(() => {
-        // Use keyword to seed random selection (but still random feel)
-        const seed = keyword.split('').reduce((a, c) => a + c.charCodeAt(0), 0);
-        const randomIndex = (seed + Date.now()) % oracleSymbols.length;
-        const oracle = oracleSymbols[randomIndex];
+        // Random selection from category
+        const randomIndex = Math.floor(Math.random() * category.oracles.length);
+        const oracle = category.oracles[randomIndex];
 
         oracleDrawing.innerHTML = oracle.svg;
         oracleName.textContent = oracle.name;
         oracleMeaning.textContent = oracle.meaning;
 
         generateBtn.disabled = false;
-        generateBtn.textContent = config.button_text || defaultConfig.button_text;
+        generateBtn.textContent = '🎴 เสี่ยงเซียมซี!';
       }, 1500);
     }
 
     // Event listeners
     generateBtn.addEventListener('click', generateOracle);
-    
-    keywordInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') {
-        generateOracle();
-      }
-    });
 
     tryAgainBtn.addEventListener('click', () => {
-      keywordInput.value = '';
-      keywordInput.focus();
       resultSection.classList.add('hidden');
+      // Keep category selection
     });
 
     // Apply config to UI
@@ -413,15 +636,12 @@
       subtitleEl.textContent = cfg.subtitle_text || defaultConfig.subtitle_text;
       subtitleEl.style.fontFamily = `${customFont}, ${baseFontStack}`;
       
-      if (!generateBtn.disabled) {
-        generateBtn.textContent = cfg.button_text || defaultConfig.button_text;
-      }
       generateBtn.style.fontFamily = `${customFont}, ${baseFontStack}`;
     }
 
     // Initialize
     createStars();
-    renderSuggestions();
+    renderCategories();
 
     // Element SDK initialization
     if (window.elementSdk) {
@@ -467,8 +687,7 @@
         }),
         mapToEditPanelValues: (cfg) => new Map([
           ['title_text', cfg.title_text || defaultConfig.title_text],
-          ['subtitle_text', cfg.subtitle_text || defaultConfig.subtitle_text],
-          ['button_text', cfg.button_text || defaultConfig.button_text]
+          ['subtitle_text', cfg.subtitle_text || defaultConfig.subtitle_text]
         ])
       });
     }
@@ -476,5 +695,5 @@
     // Initial render
     onConfigChange(config);
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9c0316c04230a1b0',t:'MTc2ODc5MTcwMC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9c03497fe57c894f',t:'MTc2ODc5Mzc3OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
