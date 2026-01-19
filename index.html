@@ -1,0 +1,477 @@
+<!doctype html>
+<html lang="th" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>เซียมซีรูปภาพ AI Oracle</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+  <style>
+    body {
+      box-sizing: border-box;
+      font-family: 'Prompt', sans-serif;
+    }
+    
+    .oracle-bg {
+      background: linear-gradient(135deg, #1a0a2e 0%, #16213e 50%, #0f3460 100%);
+    }
+    
+    .mystical-card {
+      background: linear-gradient(145deg, rgba(255,215,0,0.1) 0%, rgba(255,255,255,0.05) 100%);
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(255,215,0,0.3);
+    }
+    
+    .glow-text {
+      text-shadow: 0 0 20px rgba(255,215,0,0.5), 0 0 40px rgba(255,215,0,0.3);
+    }
+    
+    .oracle-input {
+      background: rgba(255,255,255,0.1);
+      border: 2px solid rgba(255,215,0,0.4);
+      transition: all 0.3s ease;
+    }
+    
+    .oracle-input:focus {
+      border-color: #ffd700;
+      box-shadow: 0 0 20px rgba(255,215,0,0.4);
+      outline: none;
+    }
+    
+    .generate-btn {
+      background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%);
+      transition: all 0.3s ease;
+    }
+    
+    .generate-btn:hover:not(:disabled) {
+      transform: scale(1.05);
+      box-shadow: 0 0 30px rgba(255,215,0,0.6);
+    }
+    
+    .generate-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    
+    .result-frame {
+      background: linear-gradient(145deg, #2a1a4a 0%, #1a0a2e 100%);
+      border: 3px solid #ffd700;
+      box-shadow: 0 0 30px rgba(255,215,0,0.3), inset 0 0 30px rgba(255,215,0,0.1);
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-10px) rotate(2deg); }
+    }
+    
+    @keyframes sparkle {
+      0%, 100% { opacity: 0.3; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+    
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 0 20px rgba(255,215,0,0.3); }
+      50% { box-shadow: 0 0 40px rgba(255,215,0,0.6); }
+    }
+    
+    .float-animation {
+      animation: float 3s ease-in-out infinite;
+    }
+    
+    .sparkle {
+      animation: sparkle 2s ease-in-out infinite;
+    }
+    
+    .pulse-glow {
+      animation: pulse-glow 2s ease-in-out infinite;
+    }
+    
+    @keyframes drawing {
+      0% { stroke-dashoffset: 1000; }
+      100% { stroke-dashoffset: 0; }
+    }
+    
+    .drawing-animation path {
+      stroke-dasharray: 1000;
+      animation: drawing 2s ease-out forwards;
+    }
+    
+    .star {
+      position: absolute;
+      color: #ffd700;
+      opacity: 0.6;
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full oracle-bg text-white overflow-auto">
+  <div id="app-container" class="min-h-full w-full relative overflow-hidden"><!-- Floating Stars Background -->
+   <div id="stars-container" class="absolute inset-0 pointer-events-none overflow-hidden"></div>
+   <div class="relative z-10 w-full min-h-full flex flex-col items-center justify-center px-4 py-8"><!-- Header -->
+    <div class="text-center mb-8">
+     <div class="text-6xl mb-4 float-animation">
+      🔮
+     </div>
+     <h1 id="title" class="text-4xl md:text-5xl font-bold glow-text mb-2" style="color: #ffd700;">เซียมซีรูปภาพ</h1>
+     <p id="subtitle" class="text-lg md:text-xl opacity-80" style="color: #e8d5b7;">ถามคำถามในใจ แล้วให้ AI ทำนาย</p>
+    </div><!-- Main Card -->
+    <div class="mystical-card rounded-3xl p-6 md:p-8 w-full max-w-md mx-auto"><!-- Instructions -->
+     <div class="mb-6 text-center">
+      <div class="flex items-center justify-center gap-2 mb-3"><span class="text-2xl">✨</span> <span class="text-sm md:text-base opacity-90" style="color: #e8d5b7;">วิธีเล่น</span> <span class="text-2xl">✨</span>
+      </div>
+      <ol class="text-left text-sm space-y-2 opacity-80" style="color: #e8d5b7;">
+       <li class="flex gap-2"><span style="color: #ffd700;">1.</span> <span>ตั้งคำถามในใจ 1 ข้อ</span></li>
+       <li class="flex gap-2"><span style="color: #ffd700;">2.</span> <span>พิมพ์คำสุ่มด้านล่าง</span></li>
+       <li class="flex gap-2"><span style="color: #ffd700;">3.</span> <span>กดเสี่ยงเซียมซี แล้วตีความ!</span></li>
+      </ol>
+     </div><!-- Input Section -->
+     <div class="mb-6"><label for="keyword-input" class="block text-sm mb-2 opacity-80" style="color: #e8d5b7;"> พิมพ์คำสุ่ม เช่น "ความสุข", "อนาคต", "โชคลาภ" </label> <input type="text" id="keyword-input" class="oracle-input w-full px-4 py-3 rounded-xl text-white placeholder-gray-400 text-lg" placeholder="พิมพ์คำที่นี่..." maxlength="20">
+     </div><!-- Suggested Keywords -->
+     <div class="mb-6">
+      <p class="text-xs mb-2 opacity-60" style="color: #e8d5b7;">หรือเลือกคำแนะนำ:</p>
+      <div id="suggestions" class="flex flex-wrap gap-2"><!-- Suggestions will be rendered here -->
+      </div>
+     </div><!-- Generate Button --> <button id="generate-btn" class="generate-btn w-full py-4 rounded-xl font-bold text-xl text-gray-900"> 🎴 เสี่ยงเซียมซี! </button>
+    </div><!-- Result Section -->
+    <div id="result-section" class="mt-8 w-full max-w-md mx-auto hidden">
+     <div class="result-frame rounded-3xl p-6 text-center">
+      <div class="mb-4"><span class="text-sm opacity-60" style="color: #e8d5b7;">🌟 ผลเซียมซีของคุณ 🌟</span>
+      </div><!-- Oracle Drawing -->
+      <div id="oracle-drawing" class="w-48 h-48 mx-auto mb-4 rounded-2xl flex items-center justify-center overflow-hidden" style="background: rgba(255,215,0,0.1);"><!-- SVG will be inserted here -->
+      </div><!-- Interpretation -->
+      <div id="interpretation" class="text-center">
+       <p id="oracle-name" class="text-xl font-bold mb-2" style="color: #ffd700;"></p>
+       <p id="oracle-meaning" class="text-sm opacity-80" style="color: #e8d5b7;"></p>
+      </div><!-- Try Again --> <button id="try-again-btn" class="mt-6 px-6 py-2 rounded-full text-sm font-medium transition-all hover:scale-105" style="background: rgba(255,215,0,0.2); color: #ffd700; border: 1px solid rgba(255,215,0,0.4);"> 🔄 เสี่ยงใหม่ </button>
+     </div>
+    </div><!-- Footer Tip -->
+    <div class="mt-8 text-center text-xs opacity-50" style="color: #e8d5b7;">
+     💡 เคล็ดลับ: ตีความเข้าข้างตัวเองได้เลย ไม่มีผิด!
+    </div>
+   </div>
+  </div>
+  <script>
+    // Default configuration
+    const defaultConfig = {
+      title_text: 'เซียมซีรูปภาพ',
+      subtitle_text: 'ถามคำถามในใจ แล้วให้ AI ทำนาย',
+      button_text: '🎴 เสี่ยงเซียมซี!',
+      primary_color: '#ffd700',
+      secondary_color: '#1a0a2e',
+      text_color: '#e8d5b7',
+      font_family: 'Prompt'
+    };
+
+    let config = { ...defaultConfig };
+
+    // Oracle data - symbols and meanings
+    const oracleSymbols = [
+      {
+        name: 'วงกลมทองคำ',
+        meaning: 'โชคลาภกำลังมา! สิ่งดีๆ กำลังหมุนเข้าหาคุณ',
+        svg: `<svg viewBox="0 0 100 100" class="w-full h-full drawing-animation">
+          <circle cx="50" cy="50" r="35" fill="none" stroke="#ffd700" stroke-width="4"/>
+          <circle cx="50" cy="50" r="25" fill="none" stroke="#ff8c00" stroke-width="2"/>
+          <circle cx="50" cy="50" r="15" fill="#ffd700" opacity="0.5"/>
+        </svg>`
+      },
+      {
+        name: 'ดาวส่องแสง',
+        meaning: 'ความสำเร็จรออยู่! เป้าหมายของคุณใกล้แค่เอื้อม',
+        svg: `<svg viewBox="0 0 100 100" class="w-full h-full drawing-animation">
+          <polygon points="50,10 61,40 95,40 68,60 79,90 50,72 21,90 32,60 5,40 39,40" fill="none" stroke="#ffd700" stroke-width="3"/>
+          <circle cx="50" cy="50" r="8" fill="#ff8c00"/>
+        </svg>`
+      },
+      {
+        name: 'หัวใจเปล่งประกาย',
+        meaning: 'ความรักกำลังเบ่งบาน! เปิดใจรับสิ่งใหม่ๆ',
+        svg: `<svg viewBox="0 0 100 100" class="w-full h-full drawing-animation">
+          <path d="M50 85 C20 55, 10 35, 30 25 C40 20, 50 30, 50 35 C50 30, 60 20, 70 25 C90 35, 80 55, 50 85" fill="none" stroke="#ff6b6b" stroke-width="4"/>
+          <circle cx="35" cy="40" r="3" fill="#ffd700"/>
+          <circle cx="65" cy="40" r="3" fill="#ffd700"/>
+        </svg>`
+      },
+      {
+        name: 'คลื่นน้ำ',
+        meaning: 'การเปลี่ยนแปลงกำลังมา! ปรับตัวแล้วจะรุ่ง',
+        svg: `<svg viewBox="0 0 100 100" class="w-full h-full drawing-animation">
+          <path d="M10 50 Q25 30, 40 50 T70 50 T100 50" fill="none" stroke="#4fc3f7" stroke-width="4"/>
+          <path d="M10 65 Q25 45, 40 65 T70 65 T100 65" fill="none" stroke="#ffd700" stroke-width="3"/>
+          <path d="M10 35 Q25 55, 40 35 T70 35 T100 35" fill="none" stroke="#81d4fa" stroke-width="2"/>
+        </svg>`
+      },
+      {
+        name: 'ภูเขาสูง',
+        meaning: 'อุปสรรคมีไว้ให้ข้าม! พยายามต่อไปจะสำเร็จ',
+        svg: `<svg viewBox="0 0 100 100" class="w-full h-full drawing-animation">
+          <polygon points="50,15 85,80 15,80" fill="none" stroke="#a5d6a7" stroke-width="4"/>
+          <polygon points="50,35 70,80 30,80" fill="none" stroke="#ffd700" stroke-width="2"/>
+          <line x1="50" y1="15" x2="50" y2="5" stroke="#ffd700" stroke-width="2"/>
+        </svg>`
+      },
+      {
+        name: 'ดวงอาทิตย์',
+        meaning: 'พลังงานเต็มเปี่ยม! วันนี้จะเป็นวันที่ดี',
+        svg: `<svg viewBox="0 0 100 100" class="w-full h-full drawing-animation">
+          <circle cx="50" cy="50" r="20" fill="#ffd700" opacity="0.6"/>
+          <circle cx="50" cy="50" r="20" fill="none" stroke="#ff8c00" stroke-width="3"/>
+          ${[0,45,90,135,180,225,270,315].map(angle => {
+            const rad = angle * Math.PI / 180;
+            const x1 = 50 + 28 * Math.cos(rad);
+            const y1 = 50 + 28 * Math.sin(rad);
+            const x2 = 50 + 40 * Math.cos(rad);
+            const y2 = 50 + 40 * Math.sin(rad);
+            return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#ffd700" stroke-width="3"/>`;
+          }).join('')}
+        </svg>`
+      },
+      {
+        name: 'พระจันทร์เสี้ยว',
+        meaning: 'ความลึกลับรอเผย! คำตอบจะมาในเร็วๆ นี้',
+        svg: `<svg viewBox="0 0 100 100" class="w-full h-full drawing-animation">
+          <path d="M60 20 A30 30 0 1 1 60 80 A20 20 0 1 0 60 20" fill="none" stroke="#ffd700" stroke-width="4"/>
+          <circle cx="35" cy="35" r="2" fill="#fff"/>
+          <circle cx="25" cy="55" r="1.5" fill="#fff"/>
+          <circle cx="40" cy="70" r="1" fill="#fff"/>
+        </svg>`
+      },
+      {
+        name: 'สายฟ้า',
+        meaning: 'โอกาสมาเร็ว! คว้าไว้อย่าปล่อย',
+        svg: `<svg viewBox="0 0 100 100" class="w-full h-full drawing-animation">
+          <polygon points="55,10 35,45 50,45 45,90 65,50 50,50" fill="none" stroke="#ffd700" stroke-width="4"/>
+          <polygon points="55,25 45,45 52,45 48,70 58,50 52,50" fill="#ff8c00" opacity="0.5"/>
+        </svg>`
+      },
+      {
+        name: 'ใบโคลเวอร์',
+        meaning: 'โชคดีสุดๆ! ทำอะไรก็จะราบรื่น',
+        svg: `<svg viewBox="0 0 100 100" class="w-full h-full drawing-animation">
+          <circle cx="50" cy="35" r="15" fill="none" stroke="#4caf50" stroke-width="3"/>
+          <circle cx="35" cy="50" r="15" fill="none" stroke="#4caf50" stroke-width="3"/>
+          <circle cx="65" cy="50" r="15" fill="none" stroke="#4caf50" stroke-width="3"/>
+          <circle cx="50" cy="65" r="15" fill="none" stroke="#4caf50" stroke-width="3"/>
+          <line x1="50" y1="75" x2="50" y2="95" stroke="#ffd700" stroke-width="3"/>
+        </svg>`
+      },
+      {
+        name: 'ก้อนเมฆ',
+        meaning: 'พักผ่อนบ้าง! อย่าเครียดมาก ทุกอย่างจะดีเอง',
+        svg: `<svg viewBox="0 0 100 100" class="w-full h-full drawing-animation">
+          <ellipse cx="50" cy="55" rx="35" ry="20" fill="none" stroke="#e0e0e0" stroke-width="3"/>
+          <circle cx="30" cy="50" r="15" fill="none" stroke="#e0e0e0" stroke-width="3"/>
+          <circle cx="70" cy="50" r="12" fill="none" stroke="#e0e0e0" stroke-width="3"/>
+          <circle cx="45" cy="40" r="10" fill="none" stroke="#ffd700" stroke-width="2"/>
+        </svg>`
+      },
+      {
+        name: 'เกลียวคลื่น',
+        meaning: 'พลังงานหมุนเวียน! สิ่งดีๆ กำลังกลับมา',
+        svg: `<svg viewBox="0 0 100 100" class="w-full h-full drawing-animation">
+          <path d="M50 50 m-5 0 a5 5 0 1 1 10 0 a10 10 0 1 1 -20 0 a15 15 0 1 1 30 0 a20 20 0 1 1 -40 0 a25 25 0 1 1 50 0" fill="none" stroke="#ffd700" stroke-width="3"/>
+        </svg>`
+      },
+      {
+        name: 'เพชรประกาย',
+        meaning: 'คุณค่าที่ซ่อนอยู่! มองให้ดีจะเจอสิ่งมีค่า',
+        svg: `<svg viewBox="0 0 100 100" class="w-full h-full drawing-animation">
+          <polygon points="50,15 75,40 50,85 25,40" fill="none" stroke="#e0f7fa" stroke-width="3"/>
+          <line x1="25" y1="40" x2="75" y2="40" stroke="#ffd700" stroke-width="2"/>
+          <line x1="50" y1="15" x2="50" y2="40" stroke="#ffd700" stroke-width="2"/>
+          <line x1="50" y1="40" x2="50" y2="85" stroke="#ffd700" stroke-width="2"/>
+        </svg>`
+      }
+    ];
+
+    const suggestedKeywords = [
+      '💫 ความสุข', '🌟 อนาคต', '💰 โชคลาภ', 
+      '💕 ความรัก', '🎯 เป้าหมาย', '🎁 เซอร์ไพรส์'
+    ];
+
+    // DOM Elements
+    const keywordInput = document.getElementById('keyword-input');
+    const generateBtn = document.getElementById('generate-btn');
+    const resultSection = document.getElementById('result-section');
+    const oracleDrawing = document.getElementById('oracle-drawing');
+    const oracleName = document.getElementById('oracle-name');
+    const oracleMeaning = document.getElementById('oracle-meaning');
+    const tryAgainBtn = document.getElementById('try-again-btn');
+    const suggestionsContainer = document.getElementById('suggestions');
+    const starsContainer = document.getElementById('stars-container');
+
+    // Create floating stars
+    function createStars() {
+      starsContainer.innerHTML = '';
+      const stars = ['✦', '✧', '⋆', '✵', '✶'];
+      for (let i = 0; i < 20; i++) {
+        const star = document.createElement('div');
+        star.className = 'star sparkle';
+        star.textContent = stars[Math.floor(Math.random() * stars.length)];
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        star.style.fontSize = (Math.random() * 15 + 10) + 'px';
+        star.style.animationDelay = Math.random() * 2 + 's';
+        starsContainer.appendChild(star);
+      }
+    }
+
+    // Render suggestions
+    function renderSuggestions() {
+      suggestionsContainer.innerHTML = '';
+      suggestedKeywords.forEach(keyword => {
+        const btn = document.createElement('button');
+        btn.className = 'px-3 py-1 rounded-full text-xs transition-all hover:scale-105';
+        btn.style.background = 'rgba(255,215,0,0.2)';
+        btn.style.color = '#ffd700';
+        btn.style.border = '1px solid rgba(255,215,0,0.3)';
+        btn.textContent = keyword;
+        btn.addEventListener('click', () => {
+          keywordInput.value = keyword.replace(/^[^\s]+\s/, '');
+          keywordInput.focus();
+        });
+        suggestionsContainer.appendChild(btn);
+      });
+    }
+
+    // Generate oracle result
+    function generateOracle() {
+      const keyword = keywordInput.value.trim();
+      if (!keyword) {
+        keywordInput.style.borderColor = '#ff6b6b';
+        keywordInput.style.boxShadow = '0 0 20px rgba(255,107,107,0.4)';
+        setTimeout(() => {
+          keywordInput.style.borderColor = 'rgba(255,215,0,0.4)';
+          keywordInput.style.boxShadow = 'none';
+        }, 1000);
+        return;
+      }
+
+      // Disable button during animation
+      generateBtn.disabled = true;
+      generateBtn.textContent = '🔮 กำลังทำนาย...';
+
+      // Add suspense animation
+      oracleDrawing.innerHTML = `
+        <div class="text-4xl pulse-glow">🔮</div>
+      `;
+      resultSection.classList.remove('hidden');
+      oracleName.textContent = 'กำลังถอดรหัส...';
+      oracleMeaning.textContent = '';
+
+      // Scroll to result
+      setTimeout(() => {
+        resultSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 100);
+
+      // Reveal after delay
+      setTimeout(() => {
+        // Use keyword to seed random selection (but still random feel)
+        const seed = keyword.split('').reduce((a, c) => a + c.charCodeAt(0), 0);
+        const randomIndex = (seed + Date.now()) % oracleSymbols.length;
+        const oracle = oracleSymbols[randomIndex];
+
+        oracleDrawing.innerHTML = oracle.svg;
+        oracleName.textContent = oracle.name;
+        oracleMeaning.textContent = oracle.meaning;
+
+        generateBtn.disabled = false;
+        generateBtn.textContent = config.button_text || defaultConfig.button_text;
+      }, 1500);
+    }
+
+    // Event listeners
+    generateBtn.addEventListener('click', generateOracle);
+    
+    keywordInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        generateOracle();
+      }
+    });
+
+    tryAgainBtn.addEventListener('click', () => {
+      keywordInput.value = '';
+      keywordInput.focus();
+      resultSection.classList.add('hidden');
+    });
+
+    // Apply config to UI
+    async function onConfigChange(cfg) {
+      const titleEl = document.getElementById('title');
+      const subtitleEl = document.getElementById('subtitle');
+      const customFont = cfg.font_family || defaultConfig.font_family;
+      const baseFontStack = 'sans-serif';
+      
+      titleEl.textContent = cfg.title_text || defaultConfig.title_text;
+      titleEl.style.fontFamily = `${customFont}, ${baseFontStack}`;
+      
+      subtitleEl.textContent = cfg.subtitle_text || defaultConfig.subtitle_text;
+      subtitleEl.style.fontFamily = `${customFont}, ${baseFontStack}`;
+      
+      if (!generateBtn.disabled) {
+        generateBtn.textContent = cfg.button_text || defaultConfig.button_text;
+      }
+      generateBtn.style.fontFamily = `${customFont}, ${baseFontStack}`;
+    }
+
+    // Initialize
+    createStars();
+    renderSuggestions();
+
+    // Element SDK initialization
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange: async (cfg) => {
+          config = { ...defaultConfig, ...cfg };
+          await onConfigChange(config);
+        },
+        mapToCapabilities: (cfg) => ({
+          recolorables: [
+            {
+              get: () => cfg.primary_color || defaultConfig.primary_color,
+              set: (value) => {
+                cfg.primary_color = value;
+                window.elementSdk.setConfig({ primary_color: value });
+              }
+            },
+            {
+              get: () => cfg.secondary_color || defaultConfig.secondary_color,
+              set: (value) => {
+                cfg.secondary_color = value;
+                window.elementSdk.setConfig({ secondary_color: value });
+              }
+            },
+            {
+              get: () => cfg.text_color || defaultConfig.text_color,
+              set: (value) => {
+                cfg.text_color = value;
+                window.elementSdk.setConfig({ text_color: value });
+              }
+            }
+          ],
+          borderables: [],
+          fontEditable: {
+            get: () => cfg.font_family || defaultConfig.font_family,
+            set: (value) => {
+              cfg.font_family = value;
+              window.elementSdk.setConfig({ font_family: value });
+            }
+          },
+          fontSizeable: undefined
+        }),
+        mapToEditPanelValues: (cfg) => new Map([
+          ['title_text', cfg.title_text || defaultConfig.title_text],
+          ['subtitle_text', cfg.subtitle_text || defaultConfig.subtitle_text],
+          ['button_text', cfg.button_text || defaultConfig.button_text]
+        ])
+      });
+    }
+
+    // Initial render
+    onConfigChange(config);
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9c0316c04230a1b0',t:'MTc2ODc5MTcwMC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
