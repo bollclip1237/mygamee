@@ -3,7 +3,7 @@
  <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>เซียมซีรูปภาพ AI Oracle</title>
+  <title>เซียมซีร888</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="/_sdk/element_sdk.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
@@ -120,7 +120,8 @@
       🔮
      </div>
      <h1 id="title" class="text-4xl md:text-5xl font-bold glow-text mb-2" style="color: #ffd700;">เซียมซีรูปภาพ</h1>
-     <p id="subtitle" class="text-lg md:text-xl opacity-80" style="color: #e8d5b7;">เลือกหมวดหมู่ แล้วให้ AI ทำนาย</p>
+     <p id="subtitle" class="text-lg md:text-xl opacity-80" style="color: #e8d5b7;">เลือกหมวดหมู่ทำนายดวงวันนี้ได้เลยยยย !!!</p>
+     <p id="subtitle" class="text-lg md:text-xl opacity-80" style="color: #e8d5b7;" id="datetime-display">กำลังโหลด...</p>
     </div><!-- Main Card -->
     <div class="mystical-card rounded-3xl p-6 md:p-8 w-full max-w-2xl mx-auto"><!-- Category Selection -->
      <div class="mb-8">
@@ -639,9 +640,30 @@
       generateBtn.style.fontFamily = `${customFont}, ${baseFontStack}`;
     }
 
+    // Display Thailand current date and time
+    function updateThailandDateTime() {
+      const now = new Date();
+      const thaiDate = now.toLocaleString('th-TH', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        weekday: 'long',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        timeZone: 'Asia/Bangkok'
+      });
+      const datetimeDisplay = document.getElementById('datetime-display');
+      if (datetimeDisplay) {
+        datetimeDisplay.textContent = '📅 ' + thaiDate;
+      }
+    }
+
     // Initialize
     createStars();
     renderCategories();
+    updateThailandDateTime();
+    setInterval(updateThailandDateTime, 1000);
 
     // Element SDK initialization
     if (window.elementSdk) {
