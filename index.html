@@ -3,7 +3,7 @@
  <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>เซียมซีร888</title>
+  <title>เซียมซี888</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="/_sdk/element_sdk.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
@@ -119,9 +119,11 @@
      <div class="text-6xl mb-4 float-animation">
       🔮
      </div>
-     <h1 id="title" class="text-4xl md:text-5xl font-bold glow-text mb-2" style="color: #ffd700;">เซียมซีรูปภาพ</h1>
-     <p id="subtitle" class="text-lg md:text-xl opacity-80" style="color: #e8d5b7;">เลือกหมวดหมู่ทำนายดวงวันนี้ได้เลยยยย !!!</p>
-     <p id="subtitle" class="text-lg md:text-xl opacity-80" style="color: #e8d5b7;" id="datetime-display">กำลังโหลด... </p>
+     <h1 id="title" class="text-4xl md:text-5xl font-bold glow-text mb-2" style="color: #ffd700;">เซียมซีอาหวัง</h1>
+     <p id="subtitle" class="text-lg md:text-xl opacity-80" style="color: #e8d5b7;">ดวงวันนี้เป็นไงบ้างนะ</p>
+     <div id="thai-clock" class="text-base mt-3 opacity-70" style="color: #ffd700;">
+      🕐 กำลังโหลดเวลา...
+     </div>
     </div><!-- Main Card -->
     <div class="mystical-card rounded-3xl p-6 md:p-8 w-full max-w-2xl mx-auto"><!-- Category Selection -->
      <div class="mb-8">
@@ -151,7 +153,7 @@
      </div>
     </div><!-- Footer Tip -->
     <div class="mt-8 text-center text-xs opacity-50" style="color: #e8d5b7;">
-     💡 จัดทำโดย นายรัชพล สุขโต ระดับชั้น สทส.1/2 แผนกเทคโนโลยีสารสนเทศ วิทยาลัยอาชีวศึกษา
+     💡 จัดทำโดย : นายรัชพล สุขโต ระดับชั้น สทส.1/2 แผนกเทคโนโลยีสารสนเทศ วิทยาลัยอาชีวศึกษาร้อยเอ็ด 
     </div>
    </div>
   </div>
@@ -287,11 +289,11 @@
         ]
       },
       'การเงิน': {
-        emoji: '💰',
+        emoji: '��',
         color: '#4caf50',
         oracles: [
           {
-            name: 'วงกลมทอง',
+            name: 'ว�����ลมทอง',
             meaning: 'โชคลาภกำลังมา! เงินทองไหลเข้า',
             svg: `<svg viewBox="0 0 100 100" class="w-full h-full drawing-animation">
               <circle cx="50" cy="50" r="35" fill="none" stroke="#ffd700" stroke-width="4"/>
@@ -334,7 +336,7 @@
             </svg>`
           },
           {
-            name: 'ถุงทอง',
+            name: 'ถ��งทอง',
             meaning: 'ลาภลอยมา! รับเงินก้อนโต',
             svg: `<svg viewBox="0 0 100 100" class="w-full h-full drawing-animation">
               <path d="M35 40 Q35 25 50 25 Q65 25 65 40" fill="none" stroke="#8b4513" stroke-width="3"/>
@@ -350,7 +352,7 @@
         color: '#2196f3',
         oracles: [
           {
-            name: 'ดาวแห่งชัยชนะ',
+            name: 'ดาวแห่งชัยช��ะ',
             meaning: 'ความสำเร็จรออยู่! งานจะราบรื่น',
             svg: `<svg viewBox="0 0 100 100" class="w-full h-full drawing-animation">
               <polygon points="50,10 61,40 95,40 68,60 79,90 50,72 21,90 32,60 5,40 39,40" fill="none" stroke="#ffd700" stroke-width="3"/>
@@ -382,7 +384,7 @@
           },
           {
             name: 'บันไดสู่ฝัน',
-            meaning: 'ก้าวไปทีละขั้น! ความสำเร็จใกล้แล้ว',
+            meaning: 'ก้าวไปทีละขั���น! ความสำเร็จใกล้แล้ว',
             svg: `<svg viewBox="0 0 100 100" class="w-full h-full drawing-animation">
               <line x1="20" y1="80" x2="40" y2="80" stroke="#2196f3" stroke-width="3"/>
               <line x1="40" y1="80" x2="40" y2="65" stroke="#2196f3" stroke-width="3"/>
@@ -395,7 +397,7 @@
             </svg>`
           },
           {
-            name: 'โล่ความภาคภูมิ',
+            name: 'โล่ความ���าคภูมิ',
             meaning: 'ผลงานโดดเด่น! จะได้รับการยอมรับ',
             svg: `<svg viewBox="0 0 100 100" class="w-full h-full drawing-animation">
               <path d="M50 20 Q70 25 75 45 Q75 65 50 85 Q25 65 25 45 Q30 25 50 20" fill="none" stroke="#ffd700" stroke-width="4"/>
@@ -458,7 +460,7 @@
           }
         ]
       },
-      'การเดินทาง': {
+      'การ���ดินทาง': {
         emoji: '🎁',
         color: '#9c27b0',
         oracles: [
@@ -640,10 +642,14 @@
       generateBtn.style.fontFamily = `${customFont}, ${baseFontStack}`;
     }
 
-    // Display Thailand current date and time
-    function updateThailandDateTime() {
+    // Thai Clock Update
+    function updateThaiClock() {
+      const thaiClockEl = document.getElementById('thai-clock');
+      if (!thaiClockEl) return;
+      
       const now = new Date();
-      const thaiDate = now.toLocaleString('th-TH', {
+      const options = {
+        timeZone: 'Asia/Bangkok',
         year: 'numeric',
         month: 'long',
         day: 'numeric',
@@ -651,19 +657,18 @@
         hour: '2-digit',
         minute: '2-digit',
         second: '2-digit',
-        timeZone: 'Asia/Bangkok'
-      });
-      const datetimeDisplay = document.getElementById('datetime-display');
-      if (datetimeDisplay) {
-        datetimeDisplay.textContent = '📅 ' + thaiDate;
-      }
+        hour12: false
+      };
+      
+      const thaiTime = now.toLocaleString('th-TH', options);
+      thaiClockEl.textContent = `🕐 ${thaiTime}`;
     }
-
+    
     // Initialize
     createStars();
     renderCategories();
-    updateThailandDateTime();
-    setInterval(updateThailandDateTime, 1000);
+    updateThaiClock();
+    setInterval(updateThaiClock, 1000); // Update every second
 
     // Element SDK initialization
     if (window.elementSdk) {
@@ -717,5 +722,5 @@
     // Initial render
     onConfigChange(config);
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9c03497fe57c894f',t:'MTc2ODc5Mzc3OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9c035fbd65678940',t:'MTc2ODc5NDY5MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
